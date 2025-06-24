@@ -1,0 +1,75 @@
+:
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .preview2{
+                display:flex;
+            }
+            .thumb1 {
+              cursor: pointer;
+            }
+            .pfp1{
+                height: 45px;
+                width: 50px;
+                display:flex;
+                margin:0px;
+                border-radius: 200px;
+            }
+            .title{
+                margin:0px;
+                cursor: pointer;
+            }
+            .name{
+                margin-top:1px;
+                margin-bottom: 1px;
+            }
+            .info{
+                font-size: 15px;
+                font-family:serif;
+            }
+            .two{
+                margin-top: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="one">
+       <div class="preview">
+        <img src="thumbnail1.jpg" class="thumb1"/>
+        <div class="preview2">
+        <div class="pfp1"> <img src="content.png" class="pfp1"/> </div>
+        <div class="title"><p class=title><strong>How to make a youtube thumbnail</strong></p>
+            <div class="name"><p class="name">The Entertainer</p></div>
+            <div class="info">7 Years ago - 6.2M views</div>
+        </div>
+        </div>
+       </div>
+       </div>
+
+
+       <div class="two">
+       <div class="preview">
+        <img src="thumbnail2.jpg" class="thumb1"/>
+        <div class="preview2">
+        <div class="pfp1"> <img src="athlete.jpg" class="pfp1"/> </div>
+        <div class="title"><p class=title><strong>Impossible moments in sport history</strong></p>
+            <div class="name"><p class="name">Athletus</p></div>
+            <div class="info">2 Years ago - 2.1M views</div>
+        </div>
+        </div>
+       
+       
+        <div class="two">
+            <div class="preview">
+            <img src="thumbnail3.jpg" class="thumb1"/>
+            <div class="preview2">
+            <div class="pfp1"> <img src="chef.jpg" class="pfp1"/> </div>
+            <div class="title"><p class=title><strong>Top 10 Hardest Meals to cook</strong></p>
+            <div class="name"><p class="name">Master-Chef</p></div>
+            <div class="info">4 Months ago - 13.8M views</div>
+        </div>
+        </div>
+       
+    </body>
+</html>
