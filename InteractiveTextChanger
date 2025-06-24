@@ -1,0 +1,99 @@
+<html>
+<head>
+    <style>
+       .big
+        {
+            font-size: 30px;
+            color: rgb(26, 228, 26);
+        }
+    .one
+    {
+        background-color: green;
+        color: white;
+        border:none;
+        font-size: 18px;
+        padding: 5px 5px;
+        padding-left:  15px;
+        padding-right: 15px;
+        transition: padding 0.15s;
+        cursor: pointer;
+    }
+    .one:hover
+    {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .two
+    {
+        background-color: green;
+        color: white;
+        border:none;
+        font-size: 18px;
+        padding: 5px 5px;
+        padding-left:  15px;
+        padding-right: 15px;
+        transition: padding 0.15s;
+        cursor: pointer;
+    }
+    .two:hover
+    {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .three
+    {
+        background-color: green;
+        color: white;
+        border:none;
+        font-size: 18px;
+        padding: 5px 5px;
+        padding-left:  15px;
+        padding-right: 15px;
+        transition: padding 0.15s;
+        display:block;
+        margin-top: 10px;
+        cursor:pointer;
+    }
+    .three:hover
+    {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    #hidden
+    {
+        width: 122px;
+    }
+
+
+       
+    </style>
+
+
+    <script>
+        function Familiarize(bol)
+        {
+            if (bol) {document.getElementById("Text3").className = "big";}
+            if (!bol) {document.getElementById("Text3").className = "";}
+        }
+        function Change(option)
+        {
+            if (option == 1)  {document.getElementById('Text1').textContent = "Changed!";}
+            if (option == 2)  {document.getElementById('Text2').textContent = "Changed!";}
+            if (option == 3)  {document.getElementById('Text3').textContent = "Changed!";}
+        }
+       
+    </script>
+   
+</head>
+<body>
+    <div id="Text1" class="big">Text 1</div>
+    <div id="Text2" class="big">Text 2</div>
+    <div id="Text3">Text 3</div>
+    <button class="one" onclick="Familiarize(baol = false)">Undo</button>
+    <button class="two" onclick="Familiarize(bol = true)">Do</button>
+    <button class="three" onclick="Change(parseInt(document.getElementById('hidden').value))">Change</button>
+    <input id="hidden" placeholder="Input number of text!"/>
+   
+</body>
+</html>
+
