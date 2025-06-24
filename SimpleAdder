@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exercise!</title>
+    <style>
+        .button {
+            margin-top: 7px;    
+            padding: 15px 30px;
+            border:none;
+            background-color: rgb(145, 221, 32);
+            cursor: pointer;
+            transition: background-color 0.25s; box-shadow: 0.25s ;
+            display:block;
+            margin-bottom: 30px;
+        }
+        .button:hover {
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.096);
+            background-color: rgba(145, 221, 32, 0.568);
+        }
+        .button:active {
+            box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.096);
+            background-color: rgba(145, 221, 32, 0.733);
+        }
+    </style>
+    <script>
+        function plus() {
+            var one = parseFloat(document.getElementById("input1").value);
+            var two = parseFloat(document.getElementById("input2").value);
+
+
+            if (!isNaN(one) && !isNaN(two)) {
+                var result = one + two;
+                document.getElementById("name").textContent = `${one} + ${two} = ${result}`;
+            } else {
+                document.getElementById("name").textContent = "Please enter valid numbers.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <input class="input1" id="input1" placeholder="input1" type="number" />
+    <input class="input2" id="input2" placeholder="input2" type="number" />
+    <button id="button" class="button" onclick="plus()">Save</button>
+    <div id="name" class="name"></div>
+</body>
+</html>
+
