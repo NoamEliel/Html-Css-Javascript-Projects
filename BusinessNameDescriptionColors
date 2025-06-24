@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+     <style>
+       #Name{
+        font-size: 30px;
+        background-color: blue;
+        margin-bottom: 20px;
+       }
+       #what_we_do{
+        color: red;
+        margin-top: 20px;
+       }
+       #body {
+        background-color: yellow;
+       }
+     </style>
+    </head>
+    <body id="body">
+    <div id="Name">Itzik Falafel</div>
+    <div id="what_we_do">We sell Falafel!</div>
+    <img id="sky" src="">
+    </body>
+</html>
