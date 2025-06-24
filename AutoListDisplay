@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Page Title</title>
+</head>
+ 
+<body onload="AutoListScreen()">
+   
+ 
+
+
+
+
+ 
+
+
+  <script>
+     var list =
+            [
+              { name: "Neta", age: 16 },
+              { name: "Nimrod", age: 17 },            
+              { name: "Ron", age: 18 }
+            ];
+    function AutoListScreen()
+    {
+       
+        let i = 0;
+        for(i; i < 3; i++)
+        {
+            document.getElementById('results').innerHTML +=
+            `
+            <div>
+            <div id="name"> ${list[i].name}</div>
+            <div id="age"> ${list[i].age}age</div>
+            </div>
+            `
+        }
+
+
+
+
+
+
+    }
+  </script>
+   
+  <div id="results" class=results>
+  </div>
+</body>
+</html>
+
