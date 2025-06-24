@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Haircuts Project</title>
+</head>
+<body>
+<div id="result"></div>
+<script>
+  var haircuts = [
+    { name: "Asi", hour: 10, minute: 30, phone: "052-1283723", gender: "men" },
+    { name: "Yuval", hour: 10, minute: 45, phone: "058-1726376", gender: "woman" },
+    { name: "Guy", hour: 11, minute: 15, phone: "054-8612732", gender: "men" },
+    { name: "Aya", hour: 11, minute: 45, phone: "058-7253752", gender: "woman" },
+    { name: "Tal", hour: 9, minute: 30, phone: "054-7126372", gender: "woman" }
+  ];
+  function printFirstPhoneNumber() {
+    var firstPhoneNumber = haircuts[0].phone;
+
+
+    document.getElementById("result").innerHTML = "First person's phone number: " + firstPhoneNumber;
+  }
+//אני משתמש ב windows.onload כדאי שהיה יותר קל.
+  window.onload = printFirstPhoneNumber;
+</script>
+</body>
+</html>
+
+
+
