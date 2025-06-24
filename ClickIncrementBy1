@@ -1,0 +1,33 @@
+
+<!doctype html>
+<html>
+<head>
+<script>
+function double()
+{
+    var num =document.getElementById("number").value;
+    num++;
+    document.getElementById("number").value = num;
+}
+
+
+
+
+</script>
+
+
+
+
+</head>
+
+
+
+
+<body>
+   
+</body>
+    <input id="number" value="1">
+    <button id="double" onclick="double()">double</button>
+
+
+</html>
