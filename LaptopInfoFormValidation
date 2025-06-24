@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+   #name
+   {
+      font-size: 20px;
+      font-family: 'Times New Roman', Times, serif;
+   }
+   .nameinput
+    {
+        display:block;
+        padding:5px;
+        border-style: solid;
+        border-radius: 10px;
+        border-width: 1px;
+        margin-top:5px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    #company
+    {
+      font-size: 20px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+   .companyinput
+    {
+        display:block;
+        padding:5px;
+        border-style: solid;
+        border-radius: 10px;
+        border-width: 1px;
+        margin-top:5px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    #made
+    {
+      font-size: 20px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+   .madeinput
+    {
+        display:block;
+        padding:5px;
+        border-style: solid;
+        border-radius: 10px;
+        border-width: 1px;
+        margin-top:5px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    #PID
+    {
+      font-size: 20px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+   .PIDinput
+    {
+        display:block;
+        padding:5px;
+        border-style: solid;
+        border-radius: 10px;
+        border-width: 1px;
+        margin-top:5px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+      .button
+      {
+        background-color: rgb(46, 164, 79);
+        border-color: rgb(46, 164, 79);
+        height: 33px;
+        width: 80px;
+        border-style: solid;
+        border-width: 0px;
+        color: white;
+        border-radius: 7px;
+        margin-right: 5px;
+        font-size: 15px;
+        font-weight: 550;
+        cursor: pointer;
+        transition: background-color 0.05s ,color 1s, box-shadow 1s;
+      }
+      .button:hover
+      {
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
+      }
+      #Terror
+      {
+         color: red;
+         font-size: 15px;
+      }
+      #Ferror
+      {
+         color: rgb(0, 255, 0);
+         font-size: 15px;
+      }
+  </style>
+
+
+
+
+  <script>
+    function check()
+    {
+        let errorElement = document.getElementsByClassName("error")[0];
+        let name = document.getElementsByClassName("nameinput")[0].value;
+        let company = document.getElementsByClassName("companyinput")[0].value;
+        let madeinput = document.getElementsByClassName("madeinput")[0].value;
+        let PID = document.getElementsByClassName("PIDinput")[0].value;
+
+
+        if(name === "" || company === "" || madeinput === "" || PID === "")
+        {
+            errorElement.innerText = "Fill up the information!"; errorElement.id="Terror";
+        }
+       
+        else if(PID < 0)  {errorElement.innerText = "Invalid Product ID!"; errorElement.id="Terror";}
+        else {
+            errorElement.innerText = "Good to go!"; errorElement.id="Ferror";
+        }
+       
+    }
+  </script>
+</head>
+
+
+
+
+<body>
+  <div id="name">Laptop name <input type="text" class="nameinput" placeholder="Laptop's Name"/></div>
+  <div id="company">Company <input type="text" class="companyinput" placeholder="Company Name"/></div>
+  <div id="made">made in<input type="date" class="madeinput" placeholder="Date"/></div>
+  <div id="PID">Product ID<input input="number" class="PIDinput" placeholder="ID"/></div>
+  <div><button class="button" onclick="check()">Submit</button></div>
+  <div class="error"></div>
+
+
+
+
+</body>
+</html>
+
+
+
+
