@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+     <style>
+      .button
+            {
+                margin-top: 7px;    
+                padding: 15px 30px;
+                border:none;
+                background-color: rgb(145, 221, 32);
+                cursor: pointer;
+                transition: background-color 0.25s; box-shadow: 0.25s ;
+                display:block;
+            }
+            .button:hover
+            {
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.096);
+                background-color: rgba(145, 221, 32, 0.568);
+            }
+            .button:active
+            {
+                box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.096);
+                background-color: rgba(145, 221, 32, 0.733);
+            }
+     </style>
+    </head>
+    <body id="body">
+
+    <div>Name:</div>
+    <input/>
+
+    <div>Phone:</div>
+    <input/>
+
+    <div>Class:</div>
+    <input/>
+   
+    <button class="button">Save</button>
+    </body>
+</html>
