@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Haircuts Project</title>
+
+
+  <style>
+    .haircut {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #333;
+    }
+
+
+    .haircut span {
+      display: block;
+      margin-bottom: 5px;
+      color: white;
+    }
+
+
+    .haircut img {
+      max-width: 100px;
+      max-height: 100px;
+      margin-top: 5px;
+    }
+
+
+    #body {
+      background-color: rgb(43, 42, 42);
+      color: white;
+    }
+  </style>
+</head>
+<body id="body">
+
+
+<div id="haircutsList"></div>
+
+
+<script>
+  var haircuts = [
+    { name: "Asi", hour: 10, minute: 30, phone: "052-1283723", gender: "men" },
+    { name: "Yuval", hour: 10, minute: 45, phone: "058-1726376", gender: "woman" },
+    { name: "Guy", hour: 11, minute: 15, phone: "054-8612732", gender: "men" },
+    { name: "Aya", hour: 11, minute: 45, phone: "058-7253752", gender: "woman" },
+    { name: "Tal", hour: 9, minute: 30, phone: "054-7126372", gender: "woman" }
+  ];
+
+
+  function buildHaircutsView() {
+    var haircutsListDiv = document.getElementById("haircutsList");
+
+
+    for (var i = 0; i < haircuts.length; i++) {
+      var haircutDiv = document.createElement("div");
+      haircutDiv.className = "haircut";
+
+
+      var nameSpan = document.createElement("span");
+      nameSpan.innerText = "Name: " + haircuts[i].name;
+
+
+      var timeSpan = document.createElement("span");
+      timeSpan.innerText = "Time: " + haircuts[i].hour + ":" + haircuts[i].minute;
+
+
+      var phoneSpan = document.createElement("span");
+      phoneSpan.innerText = "Phone: " + haircuts[i].phone;
+
+
+      var genderImg = document.createElement("img");
+      genderImg.src = (haircuts[i].gender === "woman") ? "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQCcOIoIF9TeNZgarZu8Cm1T8EHaaNUAiiLfPx2lW-z6GriYUAb" : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSRBU6BaEsOjSk9EAUaNRGbpwu6imSJQb2iulYZr-AQ3PW7HosR";
+      genderImg.alt = (haircuts[i].gender === "woman") ? "Woman" : "Man";
+
+
+      haircutDiv.appendChild(nameSpan);
+      haircutDiv.appendChild(timeSpan);
+      haircutDiv.appendChild(phoneSpan);
+      haircutDiv.appendChild(genderImg);
+
+
+      haircutsListDiv.appendChild(haircutDiv);
+    }
+  }
+  window.onload = buildHaircutsView;
+</script>
+
+
+</body>
+</html>
+
+
+
+
