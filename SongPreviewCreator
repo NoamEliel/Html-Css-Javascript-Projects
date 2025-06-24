@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exercise!</title>
+    <style>
+        .button {
+            margin-top: 7px;    
+            padding: 15px 30px;
+            border:none;
+            background-color: rgb(145, 221, 32);
+            cursor: pointer;
+            transition: background-color 0.25s; box-shadow: 0.25s ;
+            display:block;
+            margin-bottom: 30px;
+        }
+        .button:hover {
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.096);
+            background-color: rgba(145, 221, 32, 0.568);
+        }
+        .button:active {
+            box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.096);
+            background-color: rgba(145, 221, 32, 0.733);
+        }
+        #child-image{
+            max-width: 175px;
+            max-height: 200px;
+            width: 175px;
+            height: 200px;
+            min-height: 200px;
+            min-width: 175px;
+            border-width: 0px;
+          }
+        #preview-text-container
+        {
+            width: 145px;
+            height: 200px;
+            display:flex;
+            flex-direction: column;
+           
+        }
+        #preview-image-container
+        {
+            width: 175px;
+            height: 200px;
+        }
+        #preview
+        {
+            display:flex;
+            flex-direction: row;
+            height: 200px;
+            width: 320px;
+        }
+        #song-name{
+          font-size: 30px;
+          margin:5px;
+          margin-bottom: 30px;
+          color:black;
+          display:block;
+
+
+        }
+        #author-name{
+          font-size: 15px;
+          margin:5px;
+          color:black;
+          display:block;
+
+
+        }
+        #added-by{
+          color: black;
+          margin:5px;
+          margin-top: 14px;
+          display:block;
+        }
+       
+    </style>
+    <script>
+         function plus() {
+            const preview = elementFactory();
+            const previewContainer = document.getElementById("preview-container");
+            previewContainer.appendChild(preview)
+        }
+
+
+
+
+        function elementFactory() {
+          const preview = document.createElement("div");
+          preview.id = "preview";
+
+
+          const previewImageContainer = document.createElement("div");
+          previewImageContainer.id = "preview-image-container";
+
+
+          const previewImage = document.createElement("img");
+          previewImage.id = "child-image";
+          previewImage.src = "https://i.imgur.com/Iden4uN.png"; // change later
+
+
+          previewImageContainer.appendChild(previewImage)
+
+
+          const previewTextContainer = document.createElement("div");
+          previewTextContainer.id = "preview-text-container";
+          previewTextContainer.style.backgroundColor = "grey";
+          previewTextContainer.style.width = "320px";
+
+
+
+
+          const songNameContainer = document.createElement("div");
+          songNameContainer.id = "song-name";
+          let songNameInput = document.getElementById("input1");
+          songNameContainer.innerText = songNameInput.value;
+
+
+          const authorNameContainer = document.createElement("div");
+          authorNameContainer.id = "author-name";
+          let authorNameInput = document.getElementById("input2");
+          authorNameContainer.innerText = authorNameInput.value;
+
+
+          const addedNameContainer = document.createElement("div");
+          addedNameContainer.id = "added-by";
+          let addedNameInput = document.getElementById("input3");
+          addedNameContainer.innerText = addedNameInput.value;
+
+
+
+
+          previewTextContainer.appendChild(songNameContainer)
+          previewTextContainer.appendChild(authorNameContainer)
+          previewTextContainer.appendChild(addedNameContainer)
+
+
+          preview.appendChild(previewImageContainer)
+          preview.appendChild(previewTextContainer)
+
+
+
+
+          return preview;
+        }
+    </script>
+</head>
+<body id="body">
+  <div id="line1">Name:</div>
+  <input class="input1" id="input1" placeholder="Song name"/>
+
+
+  <div id="line1">Singer:</div>
+  <input class="input2" id="input2" placeholder=""/>
+
+
+  <div id="line1">By:</div>
+  <input class="input3" id="input3" placeholder="Song Suggested By:"/>
+
+
+  <div id="line1">Youtube Video ID:</div>
+  <input class="input4" id="input4" placeholder="Youtube Video Id"/>
+
+
+  <button id="button" class="button" onclick="plus()">Save</button>
+  <div id="preview-container">
+   
+
+
+   
+  </div>
+
+
+</body>
+</html>
+
+
