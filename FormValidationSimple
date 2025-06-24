@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+   
+    #name {
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      height: 15px;
+      width: 140px;
+      display: block;
+    }
+
+
+  
+    #age {
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      height: 15px;
+      width: 140px;
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+
+  
+    #save {
+      background-color: #f5ad14;
+      border-color: #f5ad14;
+      height: 33px;
+      width: 140px;
+      border-style: solid;
+      border-width: 0px;
+      color: black;
+      border-radius: 18px;
+      cursor: pointer;
+      margin-right: 5px;
+      font-size: 13px;
+      transition: background-color 0.20s;
+    }
+
+
+    #save:hover {
+      background-color: #c79800;
+    }
+    .new {
+      color: rgb(0, 255, 64);
+      margin-left: 5px;
+      margin-top: 3px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+    
+    #error {
+      color: red;
+      margin-left: 5px;
+      margin-top: 3px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+
+
+   
+  </style>
+
+
+  <script>
+    function check() {
+      document.getElementById("error").textContent = "";
+      var test = false;
+      var age = Number(document.getElementById("age").value);
+      var name = document.getElementById("name").value;
+      if (name === "" || age === "")
+      {
+        document.getElementById("error").textContent = "Please enter both a name and an age.";
+        return;
+      }
+     
+      if (age <= 0 || age > 120)
+      {
+        document.getElementById("error").textContent = "Age must be between 0 and 120.";
+      }
+      else if (age > 0 && age < 120)
+      {
+        document.getElementById("error").textContent = "Clear to pass!";
+        test = true;
+      }
+      if (test == true) {document.getElementById("error").id = "new"}
+     
+    }
+  </script>
+</head>
+
+
+<body>
+  <input id="name" type="text" placeholder="Enter name">
+  <input id="age" type="number" placeholder="Enter age">
+  <button id="save" onclick="check()">Save</button>
+  <div class="new" id="error"></div>
+</body>
+</html>
+
