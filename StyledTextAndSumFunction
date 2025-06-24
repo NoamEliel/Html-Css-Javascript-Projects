@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+       
+       .big
+       {
+            font-size: 30px;
+            color: rgb(26, 228, 26);
+       }
+    </style>
+
+
+    <script>
+        function Add() {
+            var int1 = parseInt(document.getElementById("input1").value);
+            var int2 = parseInt(document.getElementById("input2").value);
+            var sum = int1 + int2;
+            document.getElementById("output").value = sum;}
+    </script>
+   
+</head>
+<body>
+    <div class="big">Text 1</div>
+    <div class="big">Text 2</div>
+    <div>Text 3</div>
+</body>
+</html>
