@@ -1,0 +1,412 @@
+using System;
+using System.IO;
+using System.Threading;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Interactions;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
+
+namespace SeleniumTest
+{
+    public class Node
+    {
+        private string value;
+        private Node next;
+
+        public Node(string value, Node next = null)
+        {
+            this.value = value;
+            this.next = next;
+        }
+
+        public void SetNext(Node next) { this.next = next; }
+        public void SetValue(string value) { this.value = value; }
+        public string GetValue() { return this.value; }
+        public Node GetNext() { return this.next; }
+    }
+
+    class Program
+    {
+        // Constants
+        private const int updateInterval = 1;
+
+        // sheeperman testing 
+        private const string DirectMessageUrl = "https://discordapp.com/channels/505974446914535426/1130242985708224573/1379331477568749611";
+        private const string UsernameXPath = "//span[@data-text='sheeperman_']";
+        private const string MessageMenuItemId = "user-context-message-user";
+        private const string ViewFullProfileXPath = "//div[@role='button' and .//text()='View Full Profile']";
+        private const string AboutMeContentXPath = "//section[./span/h2[text()='About Me']]/*[name()='div'][1]";
+        private const string CustomStatusContentXPath = "//div[contains(@class, 'statusText')]";
+
+
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            string filePath = @"C:\Users\sheep\OneDrive\Desktop\status_log.txt";
+
+            while (true)
+            {
+                Console.WriteLine("time:" + DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss"));
+                Node head = null;
+                Node tail = null;
+
+                DateTime lastRunTime = DateTime.MinValue;
+
+                try
+                {
+                    new DriverManager().SetUpDriver(new ChromeConfig());
+
+                    using (IWebDriver driver = new ChromeDriver())
+                    {
+                        driver.Manage().Window.Maximize();
+                        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                        IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
+                        // === INITIAL LOGIN FLOW (Runs only once at startup) ===
+                        if (!PerformInitialLogin(driver, wait))
+                        {
+                            Console.WriteLine("❌ Initial login failed. Restarting browser in 5 seconds.");
+                            Thread.Sleep(5000);
+                            continue; // Restart the outer loop to try logging in again
+                        }
+
+                        // FIRST EXECUTION OF THE DM FLOW (Opens Full Profile Modal) ===
+                        ExecuteRightClickFlow(driver, wait, js);
+                        lastRunTime = DateTime.Now;
+
+                        while (true) //monitoring loop
+                        {
+                            Console.WriteLine("time:" + DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss"));
+                            string cur_result = "";
+                            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                            bool bioOrStatusExists = false; // Check for either content now
+
+                            if ((DateTime.Now - lastRunTime).TotalMinutes >= updateInterval)
+                            {
+                                Console.WriteLine($"⏱️ {updateInterval} minutes elapsed. Repeating DM flow to refresh channel.");
+                                try
+                                {
+                                    ExecuteRightClickFlow(driver, wait, js);
+                                    lastRunTime = DateTime.Now; // Reset the timer
+                                    Console.WriteLine($"✅ DM flow repeated. Next run at: {lastRunTime.AddMinutes(updateInterval).ToShortTimeString()}");
+                                }
+                                catch (Exception flowEx)
+                                {
+                                    Console.WriteLine("❌ Error during periodic DM flow: " + flowEx.Message);
+                                    // If the flow fails, we continue the loop and try again later.
+                                }
+                            }
+
+                            // Content (Bio or Status) extraction check:
+                            try
+                            {
+                                // Wait for EITHER the Bio or the Status element to be visible
+                                wait.Until(drv =>
+                                    drv.FindElements(By.XPath(AboutMeContentXPath)).Count > 0 ||
+                                    drv.FindElements(By.XPath(CustomStatusContentXPath)).Count > 0);
+                                bioOrStatusExists = true;
+                            }
+                            catch (WebDriverTimeoutException)
+                            {
+                                Console.WriteLine("⚠️ Profile modal content not fully loaded or Bio/Status content not found (Timeout).");
+                                bioOrStatusExists = false;
+                            }
+                            catch (NoSuchElementException)
+                            {
+                                Console.WriteLine("⚠️ Profile modal content element not found.");
+                                bioOrStatusExists = false;
+                            }
+
+                            if (bioOrStatusExists)
+                            {
+                                Console.WriteLine("✅ Extracting Bio and Status content...");
+
+                                string bioScript = @"
+                                    // arguments[0] is the AboutMeContentXPath constant
+                                    // arguments[1] is the CustomStatusContentXPath constant
+
+                                    // --- Helper function to format current time (JS equivalent of C# format) ---
+                                    const formatTime = () => {
+                                        const now = new Date();
+                                        const pad = (num) => String(num).padStart(2, '0');
+                                        const h = pad(now.getHours());
+                                        const m = pad(now.getMinutes());
+                                        const s = pad(now.getSeconds());
+                                        return `time:${h}:${m}:${s}`;
+                                    };
+
+                                    // --- Helper function for extraction and cleaning ---
+                                    const extractAndClean = (xpath) => {
+                                        // Use XPath to reliably find the content div
+                                        const targetDiv = document.evaluate(
+                                            xpath, 
+                                            document, 
+                                            null, 
+                                            XPathResult.FIRST_ORDERED_NODE_TYPE, 
+                                            null
+                                        ).singleNodeValue;
+        
+                                        if (!targetDiv) return null;
+
+                                        // Clone the div content to manipulate it without changing the DOM
+                                        const tempDiv = targetDiv.cloneNode(true);
+        
+                                        // 1. Replace anchor links with their text content (URL text)
+                                        tempDiv.querySelectorAll('a').forEach(a => {
+                                            a.replaceWith(a.textContent);
+                                        });
+        
+                                        // 2. Replace emoji images with their alt text (e.g., '🧠')
+                                        tempDiv.querySelectorAll('img.emoji').forEach(img => {
+                                            const altText = img.getAttribute('alt');
+                                            // The alt attribute contains the visible emoji character
+                                            img.replaceWith(altText ? altText : ''); 
+                                        });
+        
+                                        // 3. Remove display:none spans (Discord internal elements)
+                                        tempDiv.querySelectorAll('span[style=""display: none;""]').forEach(span => span.remove());
+        
+                                        // Extract the cleaned text and normalize whitespace/newlines
+                                        const text = tempDiv.textContent.trim().replace(/(\r\n|\n|\r)/gm, '\n').trim();
+                                        return text;
+                                    };
+
+                                    // --- Execution ---
+                                    const statusText = extractAndClean(arguments[1]);
+                                    const bioText = extractAndClean(arguments[0]);
+
+                                    let finalOutput = '';
+
+                                    // 1. Print current time first
+                                    finalOutput += formatTime() + '\n';
+    
+                                    // 2. Add 'Extracted data:' header
+                                    finalOutput += 'Extracted data:\n';
+
+                                    if (statusText) {
+                                        // 3. Add the Note section
+                                        finalOutput += 'Note: ' + statusText + '\n';
+                                    }
+
+                                    if (bioText) {
+                                        // 4. Add the Bio directly below the Note (or the header if no Note)
+                                        finalOutput += bioText; 
+                                    }
+    
+                                    // Check if we extracted *any* meaningful data (either status or bio)
+                                    if (!statusText && !bioText) {
+                                        return '❌ Couldn\'t find either Bio or Status content.';
+                                    }
+
+                                    return finalOutput;";
+                                string result = js.ExecuteScript(bioScript, AboutMeContentXPath, CustomStatusContentXPath).ToString();
+                                Console.WriteLine(result);
+                                cur_result = result;
+
+                                string contentForCheck = result;
+
+                                int headerEndIndex = contentForCheck.IndexOf("Extracted data:") + "Extracted data:".Length;
+                                if (headerEndIndex != -1 && headerEndIndex < contentForCheck.Length)
+                                {
+                                    int contentStartIndex = contentForCheck.IndexOf('\n', headerEndIndex);
+                                    if (contentStartIndex != -1 && contentStartIndex + 1 < contentForCheck.Length)
+                                    {
+                                        contentForCheck = contentForCheck.Substring(contentStartIndex + 1).Trim();
+                                    }
+                                }
+
+                                // If the extraction failed or it's just the error message, use the full result to prevent false negatives.
+                                if (string.IsNullOrWhiteSpace(contentForCheck) || contentForCheck.StartsWith("❌"))
+                                {
+                                    contentForCheck = result.Trim();
+                                }
+                                
+                                // DUPLICATE CHECK END ---
+                                if (!ContainsNode(head, contentForCheck))
+                                {
+                                    Node newNode = new Node(contentForCheck); 
+                                    if (head == null)
+                                    {
+                                        head = newNode;
+                                        tail = newNode;
+                                    }
+                                    else
+                                    {
+                                        tail.SetNext(newNode);
+                                        tail = newNode;
+                                    }
+
+                                    Console.WriteLine("✅ New Bio finding added to linked list.");
+                                    Console.WriteLine("time:" + DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss"));
+
+                                    try
+                                    {
+                                        // The original 'result' (with the timestamp) is correctly used for file logging.
+                                        File.AppendAllText(filePath, "--------------------" + Environment.NewLine + result + Environment.NewLine + Environment.NewLine);
+                                        Console.WriteLine("--- Saved to file ---");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("--- Error saving to file: " + ex.Message);
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("-- dup, skip --");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("--  skip  --");
+                            }
+
+                            Console.WriteLine(cur_result);
+                            Thread.Sleep(5000);
+
+                            try
+                            {
+                                _ = driver.CurrentWindowHandle;
+                            }
+                            catch (WebDriverException e)
+                            {
+                                Console.WriteLine("❌ Browser crashed or closed: " + e.Message);
+                                break; // Exit inner loop and restart whole process
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("🔥 Fatal error occurred. Restarting browser... " + ex.Message);
+                    Thread.Sleep(5000);
+                }
+            }
+        }
+
+
+        static bool PerformInitialLogin(IWebDriver driver, WebDriverWait wait)
+        {
+            try
+            {
+                string loginUrl = "https://discord.com/channels/@me";
+                Thread.Sleep(3000);
+                driver.Navigate().GoToUrl(loginUrl);
+
+                // Click "Continue in Browser"
+                try
+                {
+                    // 1. Wait until the element is present
+                    wait.Until(drv =>
+                    {
+                        try
+                        {
+                            return drv.FindElement(By.XPath("//button[div[text()='Continue in Browser']]")) != null;
+                        }
+                        catch (NoSuchElementException) { return false; }
+                    });
+
+                    // 2. Explicitly find the element again
+                    var continueButton = driver.FindElement(By.XPath("//button[div[text()='Continue in Browser']]"));
+
+                    // 3. Click the element
+                    continueButton.Click();
+
+                    Console.WriteLine("✅ Clicked 'Continue in Browser'");
+                }
+                catch (Exception)
+                {
+                    // Ignore if button not found (already logged in or on login screen)
+                }
+
+                // Login
+                Thread.Sleep(1000);
+                driver.FindElement(By.Name("email")).SendKeys("Example@gmail.com");
+                Thread.Sleep(1000);
+                driver.FindElement(By.Name("password")).SendKeys("PasswordExample");
+                Thread.Sleep(1000);
+                driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+
+                Console.WriteLine("⏳ Waiting 10 seconds for login to complete...");
+                Thread.Sleep(10000);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Login process error: " + ex.Message);
+                return false;
+            }
+        }
+
+
+        // --- RE-USABLE RIGHT-CLICK FLOW (IMPLEMENTING VIEW FULL PROFILE) ---
+        static void ExecuteRightClickFlow(IWebDriver driver, WebDriverWait wait, IJavaScriptExecutor js)
+        {
+            Console.WriteLine("🌐 Navigating directly to message link...");
+            driver.Navigate().GoToUrl(DirectMessageUrl);
+            Thread.Sleep(5000);
+
+            Console.WriteLine($"👤 Attempting JavaScript right-click on user with XPath: {UsernameXPath} to open context menu...");
+
+            IWebElement usernameElement = wait.Until(drv => driver.FindElement(By.XPath(UsernameXPath)));
+
+            string rightClickScript = @"
+                var element = arguments[0];
+                var event = new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    button: 2 // button 2 is the right mouse button
+                });
+                element.dispatchEvent(event);
+            ";
+
+            Thread.Sleep(5000);
+            js.ExecuteScript(rightClickScript, usernameElement);
+
+            // Wait 3 seconds for the context menu to display
+            Console.WriteLine("✅ Context menu should now be visible.");
+            Thread.Sleep(3000);
+
+            // Step 3: Click "Message" (Closes context menu, opens small profile pop-out)
+            Console.WriteLine("✉️ Clicking 'Message' option to open small profile pop-out...");
+
+            // Find and click the 'Message' item using its ID
+            IWebElement messageMenuItem = wait.Until(drv => driver.FindElement(By.Id(MessageMenuItemId)));
+            messageMenuItem.Click();
+
+            // The small profile pop-out is now visible. We wait 5 seconds as requested.
+            Console.WriteLine("⏳ Waiting 5 seconds for the profile pop-out and 'View Full Profile' button to appear...");
+            Thread.Sleep(5000);
+
+            // Step 4: Click "View Full Profile" (Opens the large profile modal)
+            Console.WriteLine("🖼️ Clicking 'View Full Profile' option to open large modal...");
+
+            // Find and click the 'View Full Profile' button (it is now visible in the pop-out)
+            IWebElement fullProfileButton = wait.Until(drv => driver.FindElement(By.XPath(ViewFullProfileXPath)));
+
+            // Using Actions to ensure the click hits the element, as it's in a pop-out
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(fullProfileButton).Click().Perform();
+
+            // Wait for the Full Profile Modal to Load
+            Console.WriteLine("✅ Full Profile modal should now be loaded.");
+            Thread.Sleep(5000);
+        }
+
+
+        static bool ContainsNode(Node head, string value)
+        {
+            Node current = head;
+            while (current != null)
+            {
+                if (current.GetValue() == value)
+                    return true;
+                current = current.GetNext();
+            }
+            return false;
+        }
+    }
+}
